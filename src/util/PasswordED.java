@@ -17,7 +17,7 @@ import javax.crypto.SecretKey;
 import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.PBEKeySpec;
 import javax.crypto.spec.PBEParameterSpec;
-
+import java.util.Base64;
 /**
  *
  * @author 
@@ -101,7 +101,10 @@ public class PasswordED {
             byte[] enc = ecipher.doFinal(utf8);
 
             // Encode bytes to base64 to get a string
-            return new sun.misc.BASE64Encoder().encode(enc);
+            //return new sun.misc.BASE64Encoder().encode(enc); // es para java 8
+            Base64.Encoder base64Encoder = Base64.getEncoder().withoutPadding();
+            
+            return base64Encoder.encodeToString(utf8);
 
         } catch (BadPaddingException e) {
         } catch (IllegalBlockSizeException e) {
@@ -122,10 +125,16 @@ public class PasswordED {
         try {
 
             // Decode base64 to get bytes
-            byte[] dec = new sun.misc.BASE64Decoder().decodeBuffer(str);
+            //byte[] dec = new sun.misc.BASE64Decoder().decodeBuffer(str); // es para java 8
+            byte[] binaryData = new byte[] { 0x64, 0x61, 0x74, 0x61 };
+            Base64.Encoder base64Encoder = Base64.getEncoder().withoutPadding();
+            String base64EncodedData = base64Encoder.encodeToString(binaryData);
+
+            byte[] base64DecodedData = Base64.getDecoder().decode(base64EncodedData);
+            
 
             // Decrypt
-            byte[] utf8 = dcipher.doFinal(dec);
+            byte[] utf8 = dcipher.doFinal(base64DecodedData);
 
             // Decode using utf-8
             return new String(utf8, "UTF8");

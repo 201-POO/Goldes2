@@ -5,7 +5,6 @@
  */
 package igu.util.tables;
 
-import com.sun.javafx.scene.control.skin.TableRowSkin;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Font;
